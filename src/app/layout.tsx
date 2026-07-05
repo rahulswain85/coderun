@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Montserrat } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { ClerkProvider, Show, SignInButton, SignUpButton, UserButton } from '@clerk/nextjs'
 
 const montserrat = Montserrat({subsets:['latin'],variable:'--font-sans'});
 
@@ -39,7 +40,9 @@ export default function RootLayout({
       )}
     >
       <body className="min-h-full flex flex-col">
-        <TooltipProvider>{children}</TooltipProvider>
+        <ClerkProvider>
+          <TooltipProvider>{children}</TooltipProvider>
+        </ClerkProvider>
       </body>
     </html>
   );
