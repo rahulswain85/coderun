@@ -3,7 +3,8 @@ import { Geist, Geist_Mono, Montserrat } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { ClerkProvider, Show, SignInButton, SignUpButton, UserButton } from '@clerk/nextjs'
+import { ClerkProvider } from '@clerk/nextjs'
+import { ThemeProvider } from "../../provider/themeProvider";
 
 const montserrat = Montserrat({subsets:['latin'],variable:'--font-sans'});
 
@@ -38,10 +39,20 @@ export default function RootLayout({
         "font-sans",
         montserrat.variable,
       )}
+      suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">
         <ClerkProvider>
-          <TooltipProvider>{children}</TooltipProvider>
+          <TooltipProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              {children}{" "}
+            </ThemeProvider>
+          </TooltipProvider>
         </ClerkProvider>
       </body>
     </html>
