@@ -1,0 +1,1 @@
+export const codeBoxBaseUrl = process.env.CODEBOX_BASE_URL;

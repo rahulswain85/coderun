@@ -67,21 +67,26 @@ export const currentUserRole = async () => {
     }
 }
 
-// export const getCurrentUserData = async () => {
-//     try {
-//         const user = await currentUser();
-//         if (!user) {
-//           return {
-//             sucess: false,
-//             error: "No authenticated user found",
-//           };
-//         }
-//         const data = await prisma.user.findUnique({
-//             where: {
-//                 cleakId: user.id
-//             },
-//         })
-//     } catch (error) {
-        
-//     }
-// }
+export const getCurrentUserData = async () => {
+    try {
+        const user = await currentUser();
+        if (!user) {
+          return {
+            sucess: false,
+            error: "No authenticated user found",
+          };
+        }
+        const data = await prisma.user.findUnique({
+            where: {
+                cleakId: user.id
+            },
+        });
+
+        return data
+    } catch (error) {
+        return {
+          sucess: false,
+          error: "Failed to get user data",
+        };
+    }
+}
