@@ -12,9 +12,9 @@ export async function POST(request: NextRequest) {
                 error: "User not found",
             },
                 {
-                
-                    status: 400
-            })
+                status: 400
+                }
+            )
         }
         const userRole = await currentUserRole();
 
@@ -58,10 +58,7 @@ export async function POST(request: NextRequest) {
         }
 
         for (const [language, solutionCode] of Object.entries(referenceSolutions)) {
-            //get langauge id
             const languageId = getCodeBoxLanguageId(language);
-
-            //prepare judge0 submission
 
             const submissions = testCases.map(({input, output}) => ({
                 source_code: solutionCode,
@@ -69,19 +66,12 @@ export async function POST(request: NextRequest) {
                 stdin: input,
                 expected_output: output
             }))
-            //submit all test cases in one batch
 
             const submissionRequest = await submitBatch(submissions);
 
-            // extract tokens from response
-
             const tokens = submissionRequest.map((sub: any) => sub.token);
-            
-            // poll judge 0 until all submissions are done
 
             const results = await pollBatchResults(tokens);
-            
-            // validate that each test cases
 
             for (let i = 0; i < results.length; i++){
                 const result = results[i];
@@ -104,10 +94,10 @@ export async function POST(request: NextRequest) {
                     )
                 }
             }
+        }
 
-
-            const newProblem = await prisma.problem.create({
-              data: {
+        const newProblem = await prisma.problem.create({
+            data: {
                 title,
                 description,
                 difficulty,
@@ -119,21 +109,22 @@ export async function POST(request: NextRequest) {
                 referenceSolutions,
                 //@ts-ignore
                 userId: user?.id,
-              },
-            });
-
-            return NextResponse.json({
-                success: true,
-                message: "Problem created Successfully!",
-                data: newProblem
             },
-            {
-                status: 201
-            })
-        }
+        });
+
+        return NextResponse.json({
+            success: true,
+            message: "Problem created Successfully!",
+            data: newProblem
+        },
+        {
+            status: 201
+        })
     } catch (error) {
+        console.log(error);
+        
         return NextResponse.json(
-            { error: "Failed to save problem to databse" },
+            { error: error || "Failed to save problem to database" },
             {status: 500}
         )
     }

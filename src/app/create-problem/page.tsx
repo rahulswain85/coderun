@@ -10,9 +10,7 @@ import { CreateProblemForm } from "../../../modules/problems/components/createPr
 
 const CreateProblemPage = async () => {
 
-    const user = await getCurrentUserData();
-    console.log(user)
-    
+    const user = await getCurrentUserData();    
   //@ts-ignore
   if (user?.role !== UserRole.ADMIN || !user || 'error' in user ) {
       redirect('/');

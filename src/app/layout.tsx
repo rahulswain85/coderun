@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ClerkProvider } from '@clerk/nextjs'
 import { ThemeProvider } from "../../provider/themeProvider";
+import { Toaster } from "sonner";
 
 const montserrat = Montserrat({subsets:['latin'],variable:'--font-sans'});
 
@@ -50,6 +51,7 @@ export default function RootLayout({
               enableSystem
               disableTransitionOnChange
             >
+              <Toaster/>
               {children}{" "}
             </ThemeProvider>
           </TooltipProvider>

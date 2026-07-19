@@ -15,7 +15,6 @@ export function getCodeBoxLanguageId(language:string) {
 
 export async function submitBatch(submissions: any) {
 
-
     const options = {
       method: "POST",
       url: `${codeBoxBaseUrl}/submissions/batch`,
@@ -23,21 +22,22 @@ export async function submitBatch(submissions: any) {
         "Content-Type": "application/json",
         "X-Auth-Token": process.env.CODEBOX_TOKEN,
       },
-      body: submissions,
+      data: { submissions },
     };
 
     const { data } = await axios.request(options);
 
-    return data;
+    return data.submissions || data;
 }
 
 export async function pollBatchResults(tokens: string[]) {
-    
-    while (true) {
+    const maxAttempts = 30;
+
+    for (let attempt = 0; attempt < maxAttempts; attempt++) {
         const options = {
           method: "GET",
           maxBodyLength: Infinity,
-          url: `${codeBoxBaseUrl}/submissions/${tokens.join(",")}`,
+          url: `${codeBoxBaseUrl}/submissions/batch?tokens=${tokens.join(",")}`,
           headers: {
             "Accept": "application/json",
             "X-Auth-Token": process.env.CODEBOX_TOKEN,
@@ -47,13 +47,14 @@ export async function pollBatchResults(tokens: string[]) {
         const { data } = await axios.request(options);
         const results = data.submissions;
 
-        const isAllDone = results.every((r: any) => r.status.id !== 22 && r.status.id !== 1);
+        const isAllDone = results.every((r: any) => r.status.id !== 1 && r.status.id !== 2);
 
         if (isAllDone) return results;
 
         await sleep(1000);
-
     }
+
+    throw new Error("Polling timed out after 30 seconds");
 }
 
     export const sleep = (ms: number) =>
